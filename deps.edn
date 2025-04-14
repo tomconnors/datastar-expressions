@@ -1,0 +1,6 @@
+{:paths ["src"]
+
+ :deps {io.github.squint-cljs/squint                   {:git/url "https://github.com/squint-cljs/squint.git"
+                                                        :git/sha "f5b5f36d0adf5ee81a6a3e8e54bcafb40910e332"}
+        backtick/backtick                              {:mvn/version "0.3.5"}}}
+
