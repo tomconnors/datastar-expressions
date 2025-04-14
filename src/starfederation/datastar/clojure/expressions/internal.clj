@@ -110,7 +110,9 @@
   (str/join "; "
             (map js* forms)))
 
-(defn process-string-concat [form]
+(defn process-string-concat
+  "This function converts forms whose head is a symbol starting with $ into string concatenation forms"
+  [form]
   (clojure.walk/postwalk
    (fn [node]
      (if (and (sequential? node)
@@ -130,6 +132,8 @@
        node))
    form))
 
+;; we have a few custom macros for squint
+;; they deviate from the default by producing js expressions
 (def macro-replacements {'and 'expr/and
                          'or 'expr/or
                          'println 'expr/println

@@ -1,20 +1,26 @@
 (ns boilerplate
   (:require
    [clojure.java.io :as io]
-   [jsonista.core :as j]
    [dev.onionpancakes.chassis.compiler :as hc]
    [dev.onionpancakes.chassis.core :as h]
+   [jsonista.core :as j]
+   [muuntaja.core :as m]
    [org.httpkit.server :as http-kit]
    [reitit.ring :as rr]
-   [starfederation.datastar.clojure.adapter.http-kit :refer [->sse-response
-                                                             on-open]]
-   [starfederation.datastar.clojure.api :as d*]
-   [starfederation.datastar.clojure.consts :as consts]))
+   [reitit.ring.middleware.muuntaja :as muuntaja]
+   [ring.middleware.params :as params]
+   #_[starfederation.datastar.clojure.consts :as consts]))
 
-(def cdn-url
-  (str "https://cdn.jsdelivr.net/gh/starfederation/datastar@"
-       consts/version
-       "/bundles/datastar.js"))
+#_(def cdn-url
+    (str "https://cdn.jsdelivr.net/gh/starfederation/datastar@"
+         consts/version
+         "/bundles/datastar.js"))
+
+(defn ->json [v]
+  (j/write-value-as-string v))
+
+(defn <-json [v]
+  (j/read-value v j/keyword-keys-object-mapper))
 
 (defn page-scaffold [body]
   (hc/compile
@@ -50,8 +56,8 @@
                           :body (slurp (io/resource "style.css"))})}]])
 
 (defn make-handler [routes]
-  (rr/ring-handler (rr/router
-                    routes) default-handler))
+  (rr/ring-handler (rr/router ["" {:middleware [params/wrap-params muuntaja/format-middleware]
+                                   :muuntaja m/instance} routes]) default-handler))
 
 (defonce !hk-server (atom nil))
 

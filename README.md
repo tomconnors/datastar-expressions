@@ -2,10 +2,10 @@
 
 ### REPL run
 ```
-clojure -M:dev
+clojure -M:dev ;; (bring your own repl server)
 ```
 
-Check out `dev/user.clj` and `dev/demo.clj`
+Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 
 
 ### Patching D*

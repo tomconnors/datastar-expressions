@@ -1,11 +1,11 @@
 (ns demo
   (:require
-   [jsonista.core :as j]
-   [starfederation.datastar.clojure.expressions :refer [->expr]]
    [boilerplate :as boiler]
    [dev.onionpancakes.chassis.core :as h]
-   [starfederation.datastar.clojure.adapter.http-kit :refer [->sse-response on-open]]
-   [starfederation.datastar.clojure.api :as d*]))
+   [starfederation.datastar.clojure.adapter.http-kit :refer [->sse-response
+                                                             on-open]]
+   [starfederation.datastar.clojure.api :as d*]
+   [starfederation.datastar.clojure.expressions :refer [->expr]]))
 
 (defn choose-button [field-name cmd value]
   [:button {:data-on-click (->expr
@@ -34,6 +34,7 @@
                                         (evt.preventDefault)
                                         (alert "Key Pressed")))}
        "Select me and press Enter or Ctrl+1 to trigger an alert"]]
+
      [:section {:data-signals (->expr {:form {:bear nil}
                                        :bear {:result "none"}})}
       (list
@@ -51,9 +52,8 @@
                                              (->sse-response req
                                                              {on-open
                                                               (fn [sse-gen]
-                                                                (let [v (-> req :body (j/read-value j/keyword-keys-object-mapper) :form :bear)]
-                                                                  (d*/merge-signals! sse-gen
-                                                                                     (j/write-value-as-string {:bear {:result v}}))))}))}}]
+                                                                (d*/merge-signals! sse-gen
+                                                                                   (boiler/->json {:bear {:result (-> req :body-params  :form :bear)}})))}))}}]
 
                  boiler/assets])
 
