@@ -103,3 +103,9 @@
    (and (= $my-signal "bear")
         (@post "/foo"))))
 ;; => "(() => { const value1 = $my-signal; console.log((value1)); return (($my-signal) === (\"bear\")) && (@post(\"/foo\")); })()"
+
+;; JS template strings are supported
+;; Since ` is used by the reader, we just wrap the whole thing in quotes
+(->expr
+ (@post ("`/ping/${evt.srcElement.id}`")))
+;; => "@post(`/ping/${evt.srcElement.id}`)"

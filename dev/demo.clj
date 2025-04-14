@@ -40,7 +40,20 @@
       (list
        (choose-button "bear" "/bear" "Yogi")
        (choose-button "bear" "/bear" "Pooh")
-       [:p "Selected: " [:span {:data-text (->expr ($bear.result))}]])]])))
+       [:p "Selected: " [:span {:data-text (->expr ($bear.result))}]])]
+
+     [:section {:data-signals (->expr {:clicked []})}
+      (let [click-handler (->expr
+                            ;; javascript template strings
+                           (println ("`clicked: ${evt.srcElement.id}`"))
+                            ;; array spread operator
+                           (set! $clicked [...$clicked evt.srcElement.id]))]
+        (list
+         [:button {:id "i-am-a-button"  :data-on-click click-handler}
+          "Click Me"]
+         [:button {:id "but-i-am-too"  :data-on-click click-handler}
+          "No, Me"]))
+      [:pre {:data-text "JSON.stringify($clicked)"}]]])))
 
 (defn home [req]
   {:status 200

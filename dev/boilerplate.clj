@@ -34,14 +34,14 @@
         (j/write-value-as-string {:imports
                                   {"squint-cljs/src/squint/core.js" "https://cdn.jsdelivr.net/npm/squint-cljs@0.8.145/src/squint/core.js"
                                    "squint-cljs/src/squint/string.js" "https://cdn.jsdelivr.net/npm/squint-cljs@0.8.145/src/squint/string.js"}}))]
-      [:script {:type "module"
-                :src "/datastar.js"}]]
-     [:body body
-      [:script {:type "module"}
+      [:script {:type "module" :defer true}
        (h/raw
         "window.squint_core = await import('squint-cljs/src/squint/core.js');
          window.squint_string = await import('squint-cljs/src/squint/string.js');
-         window.str = window.squint_string;")]]]]))
+         window.str = window.squint_string;")]
+      [:script {:type "module"
+                :src "/datastar.js"}]]
+     [:body body]]]))
 
 (def default-handler (rr/create-default-handler))
 

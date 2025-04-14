@@ -5,6 +5,9 @@
    [clojure.walk :as clojure.walk]
    [squint.compiler :as squint]))
 
+(defn expr-js-template [_ _ & args]
+  (concat (list 'js* (first args))))
+
 (defn expr-println
   ([_ _ & exprs]
    (let [js (str/join "," (repeat (count exprs) "(~{})"))]
@@ -99,7 +102,8 @@
                                                                'or expr-or
                                                                'when expr-when
                                                                'do expr-do
-                                                               'println expr-println}}})
+                                                               'println expr-println
+                                                               'js-template expr-js-template}}})
    (replace-deref)
    (replace-truth)
    (restore-signals-casing form)
@@ -146,8 +150,21 @@
        (cons (get macro-replacements (first node)) (rest node))
        node)) form))
 
+(defn process-interpolation
+  "Walks the forms and replaces (\"`foo`\") with (expr/js-template \"foo\")"
+  [form]
+  (clojure.walk/postwalk
+   (fn [node]
+     (if (and (list? node)
+              (= 1 (count node))
+              (string? (first node))
+              (= \` (ffirst node)))
+       (cons 'expr/js-template node)
+       node)) form))
+
 (defn pre-process [forms]
   (-> forms
+      process-interpolation
       process-string-concat
       process-macros))
 
@@ -161,5 +178,8 @@
   (process-string-concat '(do ($wut "foo" "bar")))
   (let [thing 1234]
     (process-string-concat `(do ($wut ~thing "bar"))))
-  ;;
+;; => (do (clojure.core/unquote (clojure.core/symbol (str "$wut" 1234 "bar"))))
+
+  (pre-process '("`${wut}"))
+;; => (expr/js-template "`${wut}")
   )
