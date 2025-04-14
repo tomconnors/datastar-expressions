@@ -1,0 +1,2 @@
+{:skip-comments true
+ :linters       {:unresolved-symbol {:exclude ['(starfederation.datastar.clojure.expressions/->expr)]}}}

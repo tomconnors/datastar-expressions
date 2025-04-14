@@ -1,0 +1,23 @@
+section {
+    margin: 30px 0px;
+}
+
+.box {
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.box:focus {
+    border: 2px solid red;
+}
+
+.box-green {
+    background-color: limegreen;
+    color: black;
+}
+
+.box-blue {
+    background-color: skyblue;
+}
