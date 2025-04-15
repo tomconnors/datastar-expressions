@@ -1,23 +1,25 @@
-library/src/engine/engine.ts --- TypeScript
-291   // double quotes      "(\\"|[^\"])*"                                                            291   // double quotes      "(\\"|[^\"])*"
-292   // single quotes      '(\\'|[^'])*'                                                             292   // single quotes      '(\\'|[^'])*'
-293   // ticks              `(\\`|[^`])*`                                                             293   // ticks              `(\\`|[^`])*`
-...                                                                                                   294   // iife               \(\s*((function)\s*\(\s*\)|(\(\s*\))\s*=>)\s*(?:\{[\s\S]*?\}|[^;)\{]*)\s*
-...                                                                                                   ... \)\s*\(\s*\)
-...                                                                                                   295   //
-...                                                                                                   296   // The iife support is (intentionally) limited. It only supports
-...                                                                                                   297   // function and arrow syntax with no arguments, and does not support nested
-...                                                                                                   298   // IIFEs.
-294   //                                                                                              299   //
-295   // We also want to match the non delimiter part of statements                                   300   // We also want to match the non delimiter part of statements
-296   // note we only support ; statement delimiters:                                                 301   // note we only support ; statement delimiters:
-297   //                                                                                              302   //
-298   // [^;]                                                                                         303   // [^;]
-299   //                                                                                              304   //
-300   const statementRe =                                                                             305   const statementRe =
-301     /(\/(\\\/|[^\/])*\/|"(\\"|[^\"])*"|'(\\'|[^'])*'|`(\\`|[^`])*`|[^;])+/gm                      306     /(\/(\\\/|[^\/])*\/|"(\\"|[^\"])*"|'(\\'|[^'])*'|`(\\`|[^`])*`|\(\s*((function)\s*\(\s*\)|(\(
-...                                                                                                   ... \s*\))\s*=>)\s*(?:\{[\s\S]*?\}|[^;)\{]*)\s*\)\s*\(\s*\)|[^;])+/gm
-302   const statements = ctx.value.trim().match(statementRe)                                          307   const statements = ctx.value.trim().match(statementRe)
-303   if (statements) {                                                                               308   if (statements) {
-304     const lastIdx = statements.length - 1                                                         309     const lastIdx = statements.length - 1
-
+diff --git a/library/src/engine/engine.ts b/library/src/engine/engine.ts
+index 7e23d19d..a9599b34 100644
+--- a/library/src/engine/engine.ts
++++ b/library/src/engine/engine.ts
+@@ -291,6 +291,11 @@ function genRX(
+   // double quotes      "(\\"|[^\"])*"
+   // single quotes      '(\\'|[^'])*'
+   // ticks              `(\\`|[^`])*`
++  // iife               \(\s*((function)\s*\(\s*\)|(\(\s*\))\s*=>)\s*(?:\{[\s\S]*?\}|[^;)\{]*)\s*\)\s*\(\s*\)
++  //
++  // The iife support is (intentionally) limited. It only supports
++  // function and arrow syntax with no arguments, and does not support nested
++  // IIFEs.
+   //
+   // We also want to match the non delimiter part of statements
+   // note we only support ; statement delimiters:
+@@ -298,7 +303,7 @@ function genRX(
+   // [^;]
+   //
+   const statementRe =
+-    /(\/(\\\/|[^\/])*\/|"(\\"|[^\"])*"|'(\\'|[^'])*'|`(\\`|[^`])*`|[^;])+/gm
++    /(\/(\\\/|[^\/])*\/|"(\\"|[^\"])*"|'(\\'|[^'])*'|`(\\`|[^`])*`|\(\s*((function)\s*\(\s*\)|(\(\s*\))\s*=>)\s*(?:\{[\s\S]*?\}|[^;)\{]*)\s*\)\s*\(\s*\)|[^;])+/gm
+   const statements = ctx.value.trim().match(statementRe)
+   if (statements) {
+     const lastIdx = statements.length - 1
