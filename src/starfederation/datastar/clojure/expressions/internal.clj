@@ -5,13 +5,6 @@
    [clojure.walk :as clojure.walk]
    [squint.compiler :as squint]))
 
-;; TODO remove when https://github.com/squint-cljs/squint/issues/657 is fixed
-(defn expr-set! [_ _ & args]
-  (concat
-   (if (= 3 (count args))
-     (throw (ex-info "set! with 3 args is not supported" {:args args}))
-     (list 'js* "(~{} = ~{})")) args))
-
 (defn expr-js-template [_ _ & args]
   (concat (list 'js* (first args))))
 
@@ -109,7 +102,6 @@
                                                                'or expr-or
                                                                'when expr-when
                                                                'do expr-do
-                                                               'set! expr-set!
                                                                'println expr-println
                                                                'js-template expr-js-template}}})
    (replace-deref)
@@ -148,7 +140,6 @@
 ;; they deviate from the default by producing js expressions
 (def macro-replacements {'and 'expr/and
                          'or 'expr/or
-                         'set! 'expr/set!
                          'println 'expr/println
                          'when 'expr/when})
 (defn process-macros [form]
@@ -188,7 +179,4 @@
   (let [thing 1234]
     (process-string-concat `(do ($wut ~thing "bar"))))
 ;; => (do (clojure.core/unquote (clojure.core/symbol (str "$wut" 1234 "bar"))))
-
-  (pre-process '("`${wut}"))
-;; => (expr/js-template "`${wut}")
   )
