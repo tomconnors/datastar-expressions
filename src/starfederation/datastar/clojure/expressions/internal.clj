@@ -5,6 +5,9 @@
    [clojure.walk :as clojure.walk]
    [squint.compiler :as squint]))
 
+(defn bool-expr [e]
+  (vary-meta e assoc :tag 'boolean))
+
 (defn expr-js-template [_ _ & args]
   (concat (list 'js* (first args))))
 
@@ -19,12 +22,21 @@
    (let [js (str/join ", " (repeat (count exprs) "(~{})"))]
      (concat (list 'js* js) exprs))))
 
+(defn expr-if
+  [_ _ test & body]
+  (list 'if (bool-expr test) (first body) (second body)))
+
+(defn expr-not
+  [_ _ x]
+  (let [js "(!(~{}))"]
+    (doto
+     (bool-expr
+      (concat (list 'js* js) (list x)))
+      prn)))
+
 (defn expr-when
   [_ _ test & body]
-  (list 'if test (cons 'expr/do body)))
-
-(defn bool-expr [e]
-  (vary-meta e assoc :tag 'boolean))
+  (list 'if (bool-expr test) (cons 'expr/do body)))
 
 (defn expr-or
   ([_ _] nil)
@@ -51,13 +63,6 @@
                #"squint_core\.deref\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)\s*\("
                "@$1("))
 
-(defn replace-truth
-  "Post-processes compiled JavaScript to convert squint_core.truth_(x) to (!!x)"
-  [js-string]
-  (str/replace js-string
-               #"squint_core\.truth_\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)"
-               "!!$1"))
-
 (defn collect-kebab-signals
   "Collects all kebab-case signal names starting with $ from a form"
   [form]
@@ -80,10 +85,10 @@
   Squint converts symbols like foo-bar into foo_bar, this function reverses that."
   [js-string form]
   (let [kebab-symbols (collect-kebab-signals form)
-        replacements (for [sym kebab-symbols
-                           :let [kebab-case sym
-                                 snake-case (clojure.string/replace kebab-case #"-" "_")]]
-                       [snake-case kebab-case])]
+        replacements  (for [sym  kebab-symbols
+                            :let [kebab-case sym
+                                  snake-case (clojure.string/replace kebab-case #"-" "_")]]
+                        [snake-case kebab-case])]
 
     (if (empty? replacements)
       js-string
@@ -92,20 +97,34 @@
               js-string
               replacements))))
 
+;; This is how we override squint's special forms (which aren't extensible)
+;; We walk the forms before compiling, and replace the special forms with
+;; our own macros that compile to the JS that we want.
+;; Mainly we want to avoid special forms that rely on the squint core lib
+(def macro-replacements {'and     'expr/and
+                         'or      'expr/or
+                         'if      'expr/if
+                         'not     'expr/not
+                         'println 'expr/println
+                         'when    'expr/when})
+
+(def compiler-macro-options {'expr {'and         expr-and
+                                    'or          expr-or
+                                    'when        expr-when
+                                    'do          expr-do
+                                    'if          expr-if
+                                    'not         expr-not
+                                    'println     expr-println
+                                    'js-template expr-js-template}})
+
 (defn js* [form]
   (->
    (squint.compiler/compile-string (str form) {:elide-imports true
                                                :elide-exports true
-                                               :top-level false
-                                               :context :expr
-                                               :macros {'expr {'and expr-and
-                                                               'or expr-or
-                                                               'when expr-when
-                                                               'do expr-do
-                                                               'println expr-println
-                                                               'js-template expr-js-template}}})
+                                               :top-level     false
+                                               :context       :expr
+                                               :macros        compiler-macro-options})
    (replace-deref)
-   (replace-truth)
    (restore-signals-casing form)
    (str/replace #"\n" " ")
    (str/trim)))
@@ -122,8 +141,8 @@
      (if (and (sequential? node)
               (symbol? (first node))
               (.startsWith (name (first node)) "$"))
-       (let [signal-ref (name (first node))
-             args (rest node)
+       (let [signal-ref     (name (first node))
+             args           (rest node)
              processed-args (map (fn [arg]
                                    (if (and (sequential? arg)
                                             (= 'clojure.core/unquote (first arg)))
@@ -136,12 +155,6 @@
        node))
    form))
 
-;; we have a few custom macros for squint
-;; they deviate from the default by producing js expressions
-(def macro-replacements {'and 'expr/and
-                         'or 'expr/or
-                         'println 'expr/println
-                         'when 'expr/when})
 (defn process-macros [form]
   (clojure.walk/postwalk
    (fn [node]

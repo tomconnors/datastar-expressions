@@ -107,5 +107,32 @@
 ;; JS template strings are supported
 ;; Since ` is used by the reader, we just wrap the whole thing in quotes
 (->expr
- (@post ("`/ping/${evt.srcElement.id}`")))
+  (@post ("`/ping/${evt.srcElement.id}`")))
 ;; => "@post(`/ping/${evt.srcElement.id}`)"
+
+;; Negation
+(->expr (not $foo))
+;; => "(!($foo))"
+(->expr (not (= 1 2)))
+;; => "(!((1) === (2)))"
+(->expr (not= (+ 1 3)  4))
+;; => "((1) + (3)) !== (4)"
+(->expr (set! $ui._leftnavOpen (not $ui._leftnavOpen)))
+;; => "$ui._leftnavOpen = (!($ui._leftnavOpen))"
+
+;; if
+(->expr (set! $ui._leftnavOpen (if $ui._leftnavOpen false true)))
+;; => "$ui._leftnavOpen = (($ui._leftnavOpen) ? (false) : (true))"
+;;
+(->expr (if $ui._leftnavOpen
+          (set! $ui._leftnavOpen false)
+          (set! $ui._leftnavOpen true)))
+;; => "(($ui._leftnavOpen) ? ($ui._leftnavOpen = false) : ($ui._leftnavOpen = true))"
+
+;; Known Limitations
+
+;; a generated symbol (el-id below) cannot be used in a template string
+(->expr (let [el-id evt.srcElement.id]
+          (when el-id
+            (@post ("`/ping/${el-id}`")))))
+;; => "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return @post(`/ping/${el-id}`)} else { return alert(\"No id\")}; })()"
