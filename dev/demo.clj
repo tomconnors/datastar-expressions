@@ -1,3 +1,5 @@
+;; Copyright © 2025 Casey Link
+;; SPDX-License-Identifier: MIT
 (ns demo
   (:require
    [boilerplate :as boiler]

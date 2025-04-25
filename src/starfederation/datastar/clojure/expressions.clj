@@ -1,3 +1,5 @@
+;; Copyright © 2025 Casey Link
+;; SPDX-License-Identifier: MIT
 (ns starfederation.datastar.clojure.expressions
   (:require
    [starfederation.datastar.clojure.expressions.internal :as impl]

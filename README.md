@@ -1,6 +1,8 @@
-# clojure to datastar expression transpiler
+# `expressions`
 
-This is a proof-of-concept for writing [datastar](https://data-star.dev/) expressions using clojure without manual string concatenation.
+> Clojure to Datastar expression transpiler
+
+`expressions` is a proof-of-concept for writing [🚀 datastar][dt] expressions using Clojure without manual string concatenation.
 
 Instead of:
 
@@ -17,8 +19,42 @@ Write this:
                           (@post "/update-person"))}]
 ```
 
+It is powered by [squint](https://github.com/squint-cljs/squint), thanks [@borkdude][bork].
 
-### REPL run
+## Goal & Non-Goals
+
+Since Clojure does not have string interpolation, writing even simple [Datastar
+(d\*) expressions][dt-expr] can involve a lot of `str` or `format` gymnastics.
+
+The goal of `expressions` is to add a little bit of syntax sugar when writing
+d\* expressions so that they can be read and manipulated as s-expressions.
+
+D\* expressions are not exactly javascript, though they are interpreted by the
+js runtime. D\* expressions also do not have a grammar or really any formal
+definition of any kind. Delaney's official position is that the simplest
+and obvious expressions a human would write should work.
+
+`expressions` follows that by trying to provide coverage for 99% of simple and
+obvious expressions.
+
+⚠️ You can totally write expressions that result in broken javascript, that is not
+necessarily a bug.
+
+## Install
+
+```clojure
+datastar/expressions {:git/url "https://github.com/ramblurr/datastar-expressions/"
+                      :git/sha "8db9d4bf5a178912ca173f67671fd9dba6b14f90"}
+```
+
+## Status
+
+`expressions` is experimental and breaking changes will occur as it is actively being developed. Please share your feedback so we can squash bugs and arrive at a stable release.
+
+## REPL Exploration
+
+To see what this is all about, you can clone this repo and play with the demos:
+
 ```
 clojure -M:dev ;; (bring your own repl server)
 ```
@@ -26,15 +62,13 @@ clojure -M:dev ;; (bring your own repl server)
 Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 
 
-### Patching D*
+## Patching D*
 
-- datastar version beta 11 and lower: The use of `let` requires a patched version of datastar, see `regex-iife-support.patch`. A patched copy of the [develop branch][dt] is in `src/datastar@patched.js` and is used by the demo. If you do not use `let` you do not need a patched version.
+- datastar version beta 11 and lower: The use of `let` requires a patched version of datastar, see `regex-iife-support.patch`. A patched copy of the [develop branch][dt-dev] is in `src/datastar@patched.js` and is used by the demo. If you do not use `let` you do not need a patched version.
 
 - datastar version 1.0 and higher: No patch do d* is required to use `let` forms.
 
-[dt]: https://github.com/starfederation/datastar/tree/develop
-
-## Example
+## Example Usage
 
 ```clojure
 (ns user
@@ -193,3 +227,15 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
             (@post ("`/ping/${el-id}`")))))
 ;; => "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return @post(`/ping/${el-id}`)} else { return alert(\"No id\")}; })()"
 ```
+
+## License: MIT
+
+Copyright © 2025 Casey Link. Distributed under the [MIT
+License](https://opensource.org/license/mit).
+
+[bork]: https://github.com/borkdude
+[dt]: https://data-star.dev
+[dt-dev]: https://github.com/starfederation/datastar/tree/develop
+[dt-expr]: https://data-star.dev/guide/datastar_expressions
+
+

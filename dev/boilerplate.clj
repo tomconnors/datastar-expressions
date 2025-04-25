@@ -1,3 +1,5 @@
+;; Copyright © 2025 Casey Link
+;; SPDX-License-Identifier: MIT
 (ns boilerplate
   (:require
    [clojure.java.io :as io]
