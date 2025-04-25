@@ -123,7 +123,7 @@
 ;; if
 (->expr (set! $ui._leftnavOpen (if $ui._leftnavOpen false true)))
 ;; => "$ui._leftnavOpen = (($ui._leftnavOpen) ? (false) : (true))"
-;;
+
 (->expr (if $ui._leftnavOpen
           (set! $ui._leftnavOpen false)
           (set! $ui._leftnavOpen true)))

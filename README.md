@@ -28,13 +28,15 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 
 ### Patching D*
 
-The use of `let` requires a patched version of datastar, see `regex-iife-support.patch`. A patched copy of the [develop branch][dt] is in `src/datastar@patched.js` and is used by the demo.
+- datastar version beta 11 and lower: The use of `let` requires a patched version of datastar, see `regex-iife-support.patch`. A patched copy of the [develop branch][dt] is in `src/datastar@patched.js` and is used by the demo. If you do not use `let` you do not need a patched version.
+
+- datastar version 1.0 and higher: No patch do d* is required to use `let` forms.
 
 [dt]: https://github.com/starfederation/datastar/tree/develop
 
 ## Example
 
-``` clojure
+```clojure
 (ns user
   (:require [starfederation.datastar.clojure.expressions :refer [->expr]]))
 
@@ -144,7 +146,35 @@ The use of `let` requires a patched version of datastar, see `regex-iife-support
 ;; JS template strings are supported
 ;; Since ` is used by the reader, we just wrap the whole thing in quotes
 (->expr
- (@post ("`/ping/${evt.srcElement.id}`")))
+  (@post ("`/ping/${evt.srcElement.id}`")))
 ;; => "@post(`/ping/${evt.srcElement.id}`)"
+
+;; Negation
+(->expr (not $foo))
+;; => "(!($foo))"
+(->expr (not (= 1 2)))
+;; => "(!((1) === (2)))"
+(->expr (not= (+ 1 3)  4))
+;; => "((1) + (3)) !== (4)"
+(->expr (set! $ui._leftnavOpen (not $ui._leftnavOpen)))
+;; => "$ui._leftnavOpen = (!($ui._leftnavOpen))"
+
+;; if
+(->expr (set! $ui._leftnavOpen (if $ui._leftnavOpen false true)))
+;; => "$ui._leftnavOpen = (($ui._leftnavOpen) ? (false) : (true))"
+
+(->expr (if $ui._leftnavOpen
+          (set! $ui._leftnavOpen false)
+          (set! $ui._leftnavOpen true)))
+;; => "(($ui._leftnavOpen) ? ($ui._leftnavOpen = false) : ($ui._leftnavOpen = true))"
 ```
 
+## Known Limitations
+
+``` clojure
+;; a generated symbol (el-id below) cannot be used in a template string
+(->expr (let [el-id evt.srcElement.id]
+          (when el-id
+            (@post ("`/ping/${el-id}`")))))
+;; => "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return @post(`/ping/${el-id}`)} else { return alert(\"No id\")}; })()"
+```
