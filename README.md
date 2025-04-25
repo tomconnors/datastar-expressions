@@ -167,6 +167,21 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
           (set! $ui._leftnavOpen false)
           (set! $ui._leftnavOpen true)))
 ;; => "(($ui._leftnavOpen) ? ($ui._leftnavOpen = false) : ($ui._leftnavOpen = true))"
+
+;; expr/raw is an escape hatch to emit raw JS
+;; raw/1 emits its argument as is
+(->expr (set! $foo (expr/raw "!$foo")))
+;; => "$foo = !$foo"
+
+(let [we-are "/back-in-string-concat-land"]
+  (->expr
+    (set! $volume 11)
+    (expr/raw ~(str "window.location = " we-are))))
+;; => "$volume = 11; window.location = /back-in-string-concat-land"
+
+;; raw/0 emits nothing
+(->expr (set! $foo (expr/raw)))
+;; => "$foo ="
 ```
 
 ## Known Limitations

@@ -29,10 +29,8 @@
 (defn expr-not
   [_ _ x]
   (let [js "(!(~{}))"]
-    (doto
-     (bool-expr
-      (concat (list 'js* js) (list x)))
-      prn)))
+    (bool-expr
+     (concat (list 'js* js) (list x)))))
 
 (defn expr-when
   [_ _ test & body]
@@ -45,6 +43,13 @@
    (let [js (str/join " || " (repeat (inc (count next)) "(~{})"))]
      (bool-expr
       (concat (list 'js* js) (cons x next))))))
+
+(defn expr-raw
+  ([_ _]
+   (list 'js* ""))
+  ([_ _ x]
+   (let [js (str/join (repeat (count x) "~{}"))]
+     (concat (list 'js* js) x))))
 
 (defn expr-and
   ([_ _]
@@ -101,12 +106,13 @@
 ;; We walk the forms before compiling, and replace the special forms with
 ;; our own macros that compile to the JS that we want.
 ;; Mainly we want to avoid special forms that rely on the squint core lib
-(def macro-replacements {'and     'expr/and
-                         'or      'expr/or
-                         'if      'expr/if
-                         'not     'expr/not
-                         'println 'expr/println
-                         'when    'expr/when})
+(def macro-replacements {'and      'expr/and
+                         'or       'expr/or
+                         'if       'expr/if
+                         'not      'expr/not
+                         'println  'expr/println
+                         'when     'expr/when
+                         'expr/raw 'expr/raw})
 
 (def compiler-macro-options {'expr {'and         expr-and
                                     'or          expr-or
@@ -115,7 +121,8 @@
                                     'if          expr-if
                                     'not         expr-not
                                     'println     expr-println
-                                    'js-template expr-js-template}})
+                                    'js-template expr-js-template
+                                    'raw         expr-raw}})
 
 (defn js* [form]
   (->
