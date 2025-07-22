@@ -8,7 +8,9 @@
    [squint.compiler :as squint]))
 
 (defn bool-expr [e]
-  (vary-meta e assoc :tag 'boolean))
+  (if (boolean? e)
+    e
+    (vary-meta e assoc :tag 'boolean)))
 
 (defn expr-js-template [_ _ & args]
   (concat (list 'js* (first args))))
@@ -38,6 +40,10 @@
   [_ _ test & body]
   (list 'if (bool-expr test) (cons 'expr/do body)))
 
+(defn expr-when-not
+  [_ _ test & body]
+  (list 'if-not (bool-expr test) (cons 'expr/do body)))
+
 (defn expr-or
   ([_ _] nil)
   ([_ _ x] x)
@@ -62,6 +68,11 @@
    (let [js (str/join " && " (repeat (inc (count next)) "(~{})"))]
      (bool-expr
       (concat (list 'js* js) (cons x next))))))
+
+(defn replace-truth
+  "Post-process compiled JavaScript to convert squint_core.truth_(.*) to !!$1"
+  [js-string]
+  (str/replace js-string #"squint_core\.truth_\((.*)\)" "!!($1)"))
 
 (defn replace-deref
   "Post-processes compiled JavaScript to convert squint_core.deref(fn) to @fn"
@@ -121,6 +132,7 @@
 (def compiler-macro-options {'expr {'and         expr-and
                                     'or          expr-or
                                     'when        expr-when
+                                    'when-not    expr-when-not
                                     'do          expr-do
                                     'if          expr-if
                                     'not         expr-not
@@ -136,6 +148,7 @@
                                                :context       :expr
                                                :macros        compiler-macro-options})
    (replace-deref)
+   (replace-truth)
    (restore-signals-casing form)
    (str/replace #"\n" " ")
    (str/trim)))

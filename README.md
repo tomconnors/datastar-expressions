@@ -227,6 +227,16 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 ;; bare symbols
 (->expr $ui._mainMenuOpen)
 ;; => "$ui._mainMenuOpen"
+
+;; when-not
+(->expr (when-not (= 1 1)
+          (set! $ui._mainMenuOpen true)))
+;; => "(((1) === (1)) ? (null) : ($ui._mainMenuOpen = true))"
+
+;; bare booleans
+(->expr (when false
+          (set! $foo true)))
+;; => "((!!(false)) ? (($foo = true)) : (null))"
 ```
 
 ## Known Limitations

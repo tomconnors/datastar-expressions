@@ -157,6 +157,16 @@
 (->expr $ui._mainMenuOpen)
 ;; => "$ui._mainMenuOpen"
 
+;; when-not
+(->expr (when-not (= 1 1)
+          (set! $ui._mainMenuOpen true)))
+;; => "(((1) === (1)) ? (null) : ($ui._mainMenuOpen = true))"
+
+;; bare booleans
+(->expr (when false
+          (set! $foo true)))
+;; => "((!!(false)) ? (($foo = true)) : (null))"
+
 ;; Known Limitations
 
 ;; a generated symbol (el-id below) cannot be used in a template string
