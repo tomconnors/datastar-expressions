@@ -247,6 +247,12 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
           (when el-id
             (@post ("`/ping/${el-id}`")))))
 ;; => "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return @post(`/ping/${el-id}`)} else { return alert(\"No id\")}; })()"
+
+;; No condp
+(->expr (condp = $ui._mainMenuOpen
+          true (set! $ui._mainMenuOpen false)
+          false (set! $ui._mainMenuOpen true)))
+;; => "(() => { const pred__288831 = squint_core._EQ_; const expr__288842 = $ui._mainMenuOpen; if (!!(pred__288831(true, expr__288842))) { return $ui._mainMenuOpen = false} else { if (!!(pred__288831(false, expr__288842))) { return $ui._mainMenuOpen = true} else { throw new java.lang.IllegalArgumentException(squint_core.str(\"No matching clause: \", expr__288842))}}; })()"
 ```
 
 ## License: MIT
