@@ -140,7 +140,10 @@
 
 (defn compile [forms]
   (str/join "; "
-            (map js* forms)))
+            (map js*
+                 (if (sequential? forms)
+                   forms
+                   (list forms)))))
 
 (defn process-string-concat
   "This function converts forms whose head is a symbol starting with $ into string concatenation forms"

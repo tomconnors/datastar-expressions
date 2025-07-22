@@ -146,6 +146,10 @@
 (->expr (set! $foo (expr/raw)))
 ;; => "$foo ="
 
+;; bare symbols
+(->expr $ui._mainMenuOpen)
+;; => "$ui._mainMenuOpen"
+
 ;; Known Limitations
 
 ;; a generated symbol (el-id below) cannot be used in a template string
