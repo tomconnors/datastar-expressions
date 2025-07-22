@@ -44,7 +44,7 @@ necessarily a bug.
 
 ```clojure
 datastar/expressions {:git/url "https://github.com/ramblurr/datastar-expressions/"
-                      :git/sha "8db9d4bf5a178912ca173f67671fd9dba6b14f90"}
+                      :git/sha "db56e44e0dc8adf824e834c1ef013d27eb54951e"}
 ```
 
 ## Status
@@ -120,6 +120,13 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 (->expr (pokeBear $bear-id))
 ;; => "pokeBear($bear-id)"
 
+;; actions
+(->expr (@get "/poke"))
+;; => "@get(\"/poke\")"
+
+(->expr (@patch "/poke"))
+;; => "@patch(\"/poke\")"
+
 ;; expr with multiple statements are in order like you would expect
 (->expr
  (set! $bear-id 1234)
@@ -180,7 +187,7 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 ;; JS template strings are supported
 ;; Since ` is used by the reader, we just wrap the whole thing in quotes
 (->expr
-  (@post ("`/ping/${evt.srcElement.id}`")))
+ (@post ("`/ping/${evt.srcElement.id}`")))
 ;; => "@post(`/ping/${evt.srcElement.id}`)"
 
 ;; Negation
@@ -209,13 +216,17 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 
 (let [we-are "/back-in-string-concat-land"]
   (->expr
-    (set! $volume 11)
-    (expr/raw ~(str "window.location = " we-are))))
+   (set! $volume 11)
+   (expr/raw ~(str "window.location = " we-are))))
 ;; => "$volume = 11; window.location = /back-in-string-concat-land"
 
 ;; raw/0 emits nothing
 (->expr (set! $foo (expr/raw)))
 ;; => "$foo ="
+
+;; bare symbols
+(->expr $ui._mainMenuOpen)
+;; => "$ui._mainMenuOpen"
 ```
 
 ## Known Limitations
