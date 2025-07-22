@@ -66,9 +66,11 @@
 (defn replace-deref
   "Post-processes compiled JavaScript to convert squint_core.deref(fn) to @fn"
   [js-string]
-  (str/replace js-string
-               #"squint_core\.deref\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)\s*\("
-               "@$1("))
+  (-> js-string
+      (str/replace #"squint_core\.deref\(squint_core.(get)\)\s*\(" "@$1(")
+      (str/replace
+       #"squint_core\.deref\(([a-zA-Z_$][a-zA-Z0-9_$]*)\)\s*\("
+       "@$1(")))
 
 (defn collect-kebab-signals
   "Collects all kebab-case signal names starting with $ from a form"

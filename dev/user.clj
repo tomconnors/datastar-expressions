@@ -49,6 +49,13 @@
 (->expr (pokeBear $bear-id))
 ;; => "pokeBear($bear-id)"
 
+;; actions
+(->expr (@get "/poke"))
+;; => "@get(\"/poke\")"
+
+(->expr (@patch "/poke"))
+;; => "@patch(\"/poke\")"
+
 ;; expr with multiple statements are in order like you would expect
 (->expr
  (set! $bear-id 1234)
@@ -138,8 +145,8 @@
 
 (let [we-are "/back-in-string-concat-land"]
   (->expr
-    (set! $volume 11)
-    (expr/raw ~(str "window.location = " we-are))))
+   (set! $volume 11)
+   (expr/raw ~(str "window.location = " we-are))))
 ;; => "$volume = 11; window.location = /back-in-string-concat-land"
 
 ;; raw/0 emits nothing
