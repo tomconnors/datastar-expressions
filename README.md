@@ -255,10 +255,11 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 ;; => "(() => { const pred__288831 = squint_core._EQ_; const expr__288842 = $ui._mainMenuOpen; if (!!(pred__288831(true, expr__288842))) { return $ui._mainMenuOpen = false} else { if (!!(pred__288831(false, expr__288842))) { return $ui._mainMenuOpen = true} else { throw new java.lang.IllegalArgumentException(squint_core.str(\"No matching clause: \", expr__288842))}}; })()"
 ```
 
-## License: MIT
+## License: MIT License
 
-Copyright © 2025 Casey Link. Distributed under the [MIT
-License](https://opensource.org/license/mit).
+Copyright © 2025 Casey Link <unnamedrambler@gmail.com>
+Distributed under the [MIT](https://spdx.org/licenses/MIT.html).
+
 
 [bork]: https://github.com/borkdude
 [dt]: https://data-star.dev
