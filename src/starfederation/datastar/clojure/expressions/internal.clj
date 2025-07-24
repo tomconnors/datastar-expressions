@@ -182,6 +182,17 @@
        node))
    form))
 
+(defn process-not-equals
+  "Transforms (not= x y ...) into (not (= x y ...)) to avoid squint_core dependency"
+  [form]
+  (clojure.walk/postwalk
+   (fn [node]
+     (if (and (list? node)
+              (= 'not= (first node)))
+       (list 'not (cons '= (rest node)))
+       node))
+   form))
+
 (defn process-macros [form]
   (clojure.walk/postwalk
    (fn [node]
@@ -204,6 +215,7 @@
 
 (defn pre-process [forms]
   (-> forms
+      process-not-equals
       process-interpolation
       process-string-concat
       process-macros))

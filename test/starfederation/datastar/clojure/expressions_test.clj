@@ -114,7 +114,7 @@
 
 (deftest test-let-blocks
   (testing "let block with IIFE"
-    (is (= "(() => { const value1 = $my-signal; console.log((value1)); return (($my-signal) === (\"bear\")) && (@post(\"/foo\")); })()"
+    (is (= "(() => { const value1 = $my-signal; console.log((value1)); return (($my-signal) === (\"bear\")) && (@post(\"/foo\"));; })()"
            (->expr
             (let [value $my-signal]
               (println value)
@@ -137,8 +137,12 @@
            (->expr (not (= 1 2))))))
 
   (testing "not equals"
-    (is (= "((1) + (3)) !== (4)"
+    (is (= "(!(((1) + (3)) === (4)))"
            (->expr (not= (+ 1 3) 4)))))
+
+  (testing "not equals"
+    (is (= "(((!(((1) + (3)) === (4)))) ? ((@post(\"/not-equal\"))) : (null))"
+           (->expr (when (not= (+ 1 3) 4) (@post "/not-equal"))))))
 
   (testing "toggle with negation"
     (is (= "$ui._leftnavOpen = (!($ui._leftnavOpen))"
@@ -190,7 +194,7 @@
 
 (deftest test-known-limitations
   (testing "generated symbol in template string"
-    (is (= "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return (@post(\"`/ping/${el-id}`\"))}; })()"
+    (is (= "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return (@post(\"`/ping/${el-id}`\"));}; })()"
            (->expr (let [el-id evt.srcElement.id]
                      (when el-id
                        (@post "`/ping/${el-id}`"))))))))
