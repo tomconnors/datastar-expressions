@@ -2,8 +2,8 @@
 ;; SPDX-License-Identifier: MIT
 (ns starfederation.datastar.clojure.expressions
   (:require
-   [starfederation.datastar.clojure.expressions.internal :as impl]
-   [backtick         :refer [template]]))
+   [backtick         :refer [template]]
+   [starfederation.datastar.clojure.expressions.internal :as impl]))
 
 (defmacro ->expr
   "Compiles a clojure form into a datastar expression.

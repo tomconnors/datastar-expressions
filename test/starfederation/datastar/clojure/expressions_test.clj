@@ -1,8 +1,9 @@
 ;; Copyright © 2025 Casey Link
 ;; SPDX-License-Identifier: MIT
 (ns starfederation.datastar.clojure.expressions-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [starfederation.datastar.clojure.expressions :refer [->expr]]))
+  (:require
+   [clojure.test :refer [deftest is testing]]
+   [starfederation.datastar.clojure.expressions :refer [->expr]]))
 
 (def record {:record-id "1234"})
 

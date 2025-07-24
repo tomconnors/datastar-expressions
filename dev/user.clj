@@ -1,7 +1,8 @@
 ;; Copyright © 2025 Casey Link
 ;; SPDX-License-Identifier: MIT
 (ns user
-  (:require [starfederation.datastar.clojure.expressions :refer [->expr]]))
+  (:require
+   [starfederation.datastar.clojure.expressions :refer [->expr]]))
 
 ;; Samples
 
