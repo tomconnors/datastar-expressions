@@ -88,9 +88,9 @@
   [form]
   (into #{}
         (comp
-         (filter symbol?)                                         ;; Keep symbols
+         (filter symbol?) ;; Keep symbols
          (filter #(and (clojure.string/starts-with? (name %) "$") ;; ...starting with $
-                       (clojure.string/includes? (name %) "-")))  ;; ...containing dashes
+                       (clojure.string/includes? (name %) "-"))) ;; ...containing dashes
          (map name))
         (tree-seq coll? seq form)))
 
@@ -105,10 +105,10 @@
   Squint converts symbols like foo-bar into foo_bar, this function reverses that."
   [js-string form]
   (let [kebab-symbols (collect-kebab-signals form)
-        replacements  (for [sym  kebab-symbols
-                            :let [kebab-case sym
-                                  snake-case (clojure.string/replace kebab-case #"-" "_")]]
-                        [snake-case kebab-case])]
+        replacements (for [sym kebab-symbols
+                           :let [kebab-case sym
+                                 snake-case (clojure.string/replace kebab-case #"-" "_")]]
+                       [snake-case kebab-case])]
 
     (if (empty? replacements)
       js-string
@@ -121,32 +121,32 @@
 ;; We walk the forms before compiling, and replace the special forms with
 ;; our own macros that compile to the JS that we want.
 ;; Mainly we want to avoid special forms that rely on the squint core lib
-(def macro-replacements {'and      'expr/and
-                         'or       'expr/or
-                         'if       'expr/if
-                         'not      'expr/not
-                         'println  'expr/println
-                         'when     'expr/when
+(def macro-replacements {'and 'expr/and
+                         'or 'expr/or
+                         'if 'expr/if
+                         'not 'expr/not
+                         'println 'expr/println
+                         'when 'expr/when
                          'expr/raw 'expr/raw})
 
-(def compiler-macro-options {'expr {'and         expr-and
-                                    'or          expr-or
-                                    'when        expr-when
-                                    'when-not    expr-when-not
-                                    'do          expr-do
-                                    'if          expr-if
-                                    'not         expr-not
-                                    'println     expr-println
+(def compiler-macro-options {'expr {'and expr-and
+                                    'or expr-or
+                                    'when expr-when
+                                    'when-not expr-when-not
+                                    'do expr-do
+                                    'if expr-if
+                                    'not expr-not
+                                    'println expr-println
                                     'js-template expr-js-template
-                                    'raw         expr-raw}})
+                                    'raw expr-raw}})
 
 (defn js* [form]
   (->
    (squint.compiler/compile-string (str form) {:elide-imports true
                                                :elide-exports true
-                                               :top-level     false
-                                               :context       :expr
-                                               :macros        compiler-macro-options})
+                                               :top-level false
+                                               :context :expr
+                                               :macros compiler-macro-options})
    (replace-deref)
    (replace-truth)
    (restore-signals-casing form)
@@ -168,8 +168,8 @@
      (if (and (sequential? node)
               (symbol? (first node))
               (.startsWith (name (first node)) "$"))
-       (let [signal-ref     (name (first node))
-             args           (rest node)
+       (let [signal-ref (name (first node))
+             args (rest node)
              processed-args (map (fn [arg]
                                    (if (and (sequential? arg)
                                             (= 'clojure.core/unquote (first arg)))
@@ -223,8 +223,8 @@
 (comment
   (def record {:record-id 1234})
 
-  (compile  `((set! ~'$record-id ~(:record-id record))
-              (~'@post "/defile-record")))
+  (compile `((set! ~'$record-id ~(:record-id record))
+             (~'@post "/defile-record")))
 
   (process-string-concat '(do ($wut "foo")))
   (process-string-concat '(do ($wut "foo" "bar")))
