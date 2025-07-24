@@ -49,6 +49,7 @@
 (deftest test-datastar-actions
   (testing "@get action"
     (is (= "@get(\"/poke\")"
+           #_{:clj-kondo/ignore [:type-mismatch]}
            (->expr (@get "/poke")))))
 
   (testing "@patch action"

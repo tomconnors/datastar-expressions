@@ -4,8 +4,7 @@
   (:require
    [boilerplate :as boiler]
    [dev.onionpancakes.chassis.core :as h]
-   [starfederation.datastar.clojure.adapter.http-kit :refer [->sse-response
-                                                             on-open]]
+   [starfederation.datastar.clojure.adapter.http-kit :refer [->sse-response on-open]]
    [starfederation.datastar.clojure.api :as d*]
    [starfederation.datastar.clojure.expressions :refer [->expr]]))
 
@@ -47,6 +46,7 @@
      [:section {:data-signals (->expr {:clicked []})}
       (let [click-handler (->expr
                             ;; javascript template strings
+                           #_{:clj-kondo/ignore [:not-a-function]}
                            (println ("`clicked: ${evt.srcElement.id}`"))
                             ;; array spread operator
                            (set! $clicked [...$clicked evt.srcElement.id]))]

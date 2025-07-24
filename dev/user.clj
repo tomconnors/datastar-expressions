@@ -50,6 +50,7 @@
 ;; => "pokeBear($bear-id)"
 
 ;; actions
+#_{:clj-kondo/ignore [:type-mismatch]}
 (->expr (@get "/poke"))
 ;; => "@get(\"/poke\")"
 
@@ -116,6 +117,7 @@
 ;; JS template strings are supported
 ;; Since ` is used by the reader, we just wrap the whole thing in quotes
 (->expr
+ #_{:clj-kondo/ignore [:not-a-function]}
  (@post ("`/ping/${evt.srcElement.id}`")))
 ;; => "@post(`/ping/${evt.srcElement.id}`)"
 
@@ -172,6 +174,7 @@
 ;; a generated symbol (el-id below) cannot be used in a template string
 (->expr (let [el-id evt.srcElement.id]
           (when el-id
+            #_{:clj-kondo/ignore [:not-a-function]}
             (@post ("`/ping/${el-id}`")))))
 ;; => "(() => { const el_id1 = evt.srcElement.id; if (el_id1) { return @post(`/ping/${el-id}`)} else { return alert(\"No id\")}; })()"
 
