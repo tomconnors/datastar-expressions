@@ -62,12 +62,6 @@ clojure -M:dev ;; (bring your own repl server)
 Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 
 
-## Patching D*
-
-- datastar version beta 11 and lower: The use of `let` requires a patched version of datastar, see `regex-iife-support.patch`. A patched copy of the [develop branch][dt-dev] is in `src/datastar@patched.js` and is used by the demo. If you do not use `let` you do not need a patched version.
-
-- datastar version 1.0 and higher: No patch do d* is required to use `let` forms.
-
 ## Example Usage
 
 ```clojure
@@ -176,7 +170,6 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 (->expr {:my-signal "init-value"})
 ;; => "({ \"my-signal\": \"init-value\" })"
 
-;; A let block is transpiled to a IIFE, this requires a patched version of datastar
 (->expr
  (let [value $my-signal]
    (println value)
