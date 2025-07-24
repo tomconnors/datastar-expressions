@@ -28,6 +28,8 @@ jobs:
         with:
           cli: latest
           bb: latest
+          cljfmt: latest
+          clj-kondo: latest
 
       - name: Cache clojure dependencies
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # tag: v4.2.3
