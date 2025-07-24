@@ -44,7 +44,7 @@ necessarily a bug.
 
 ```clojure
 datastar/expressions {:git/url "https://github.com/ramblurr/datastar-expressions/"
-                      :git/sha "79027495e385a92ce968494b748adbdc65a780a1"}
+                      :git/sha "b55357975a4309caf33283310ca036f89bd77147"}
 ```
 
 ## Status
