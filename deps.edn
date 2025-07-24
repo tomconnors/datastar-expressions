@@ -3,14 +3,14 @@
  :deps    {io.github.squint-cljs/squint {:git/url "https://github.com/squint-cljs/squint.git"
                                          :git/sha "035625ddf0ce9fc09189814097775c7162e50b5f"}
            backtick/backtick            {:mvn/version "0.3.5"}}
- :aliases {:dev {:extra-paths ["dev"]
-                 :extra-deps  {org.clojure/clojure       {:mvn/version "1.12.0"}
-                               dev.onionpancakes/chassis {:mvn/version "1.0.365"}
-                               metosin/reitit            {:mvn/version "0.8.0"}
-                               org.flatland/ordered      {:mvn/version "1.15.12"}
-                               datastar/sdk              {:git/url   "https://github.com/starfederation/datastar/"
-                                                          :git/sha   "7f7b555998d24d5a33e16eecbdfd6aa554a16427"
-                                                          :deps/root "sdk/clojure/sdk"}
-                               datastar/http-kit         {:git/url   "https://github.com/starfederation/datastar/"
-                                                          :git/sha   "598151471c85b84bda1127d979dfb37161554348"
-                                                          :deps/root "sdk/clojure/adapter-http-kit"}}}}}
+ :aliases {:dev    {:extra-paths ["dev"]
+                    :extra-deps  {org.clojure/clojure       {:mvn/version "1.12.0"}
+                                  dev.onionpancakes/chassis {:mvn/version "1.0.365"}
+                                  metosin/reitit            {:mvn/version "0.8.0"}
+                                  org.flatland/ordered      {:mvn/version "1.15.12"}
+                                  datastar/sdk              {:git/url   "https://github.com/starfederation/datastar/"
+                                                             :git/sha   "7f7b555998d24d5a33e16eecbdfd6aa554a16427"
+                                                             :deps/root "sdk/clojure/sdk"}
+                                  datastar/http-kit         {:git/url "https://github.com/starfederation/datastar/"}}}
+           :kaocha {:extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}}
+                    :main-opts  ["-m" "kaocha.runner"]}}}

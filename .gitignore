@@ -2,7 +2,6 @@
 .idea
 *.log
 tmp/
-
 /target
 /classes
 /checkouts
@@ -17,3 +16,4 @@ pom.xml.asc
 /.cpcache
 .clj-kondo/.cache
 .lsp
+.clj-kondo/imports
