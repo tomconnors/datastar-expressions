@@ -16,4 +16,3 @@ pom.xml.asc
 /.cpcache
 .clj-kondo/.cache
 .lsp
-.clj-kondo/imports
