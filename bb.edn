@@ -1,14 +1,23 @@
 {:paths []
- :tasks {:requires         ([clojure.string :as str]
-                            [babashka.tasks :refer [shell]])
-         test              (apply clojure "-M:kaocha" *command-line-args*)
-         fmt               (shell "cljfmt -v fix dev src test")
-         fmt.check         (shell "cljfmt -v check dev src test")
+ :tasks {:requires ([clojure.string :as str]
+                    [babashka.tasks :refer [shell]])
+         test (apply clojure "-M:kaocha" *command-line-args*)
+         fmt (shell "cljfmt -v fix dev src test")
+         fmt.check (shell "cljfmt -v check dev src test")
          lint.copy-configs (let [cp (-> (shell {:out :string} "clojure -Spath -M:test:dev") :out str/trim)]
                              (shell (str "clj-kondo --lint " cp " --dependencies --copy-configs --skip-lint")))
-         lint.kondo        (shell "clj-kondo" *command-line-args*)
-         lint              (shell (str "clj-kondo" " --fail-level error"
-                                       (if (seq *command-line-args*)
-                                         (str " --lint " (first *command-line-args*))
-                                         " --lint .")))
-         ci                {:depends [test fmt.check lint]}}}
+         lint.kondo (shell "clj-kondo" *command-line-args*)
+         lint (shell (str "clj-kondo" " --fail-level error"
+                          (if (seq *command-line-args*)
+                            (str " --lint " (first *command-line-args*))
+                            " --lint .")))
+         ci {:depends [test fmt.check lint]}
+         update-readme (let [sha (-> (shell {:out :string} "git rev-parse HEAD") :out str/trim)
+                             readme (slurp "README.md")
+                             updated (str/replace readme
+                                                  (re-pattern ":git/sha \"[a-f0-9]{40}\"")
+                                                  (str ":git/sha \"" sha "\""))]
+                         (spit "README.md" updated)
+                         (shell "git add README.md")
+                         (shell "git commit -m \"Update gitlib hash in readme\"")
+                         (println "Updated README.md with git sha:" sha))}}
