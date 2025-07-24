@@ -39,5 +39,5 @@ jobs:
           key: cljdeps-${{ hashFiles('**/deps.edn') }}
           restore-keys: cljdeps-
 
-      - name: Run test suite
-        run: bb test
+      - name: Run test suite + linters
+        run: bb ci
