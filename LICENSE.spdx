@@ -1,6 +1,6 @@
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: datastar-expressions
-PackageOriginator: Casey Link
-PackageHomePage: https://github.com/Ramblurr/datastar-expressions
+PackageOriginator: Casey Link <casey@outskirtslabs.com>
+PackageHomePage: https://github.com/outskirtslabs/datastar-expressions
 PackageLicenseDeclared: MIT

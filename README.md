@@ -43,7 +43,7 @@ necessarily a bug.
 ## Install
 
 ```clojure
-datastar/expressions {:git/url "https://github.com/ramblurr/datastar-expressions/"
+datastar/expressions {:git/url "https://github.com/outskirtslabs/datastar-expressions/"
                       :git/sha "53efc7093be1ba33b331b4a27884be8925d8bdce"}
 ```
 
@@ -250,7 +250,8 @@ Check out [`dev/user.clj`](./dev/user.clj) and [`dev/demo.clj`](./dev/demo.clj)
 
 ## License: MIT License
 
-Copyright © 2025 Casey Link <unnamedrambler@gmail.com>
+Copyright © 2025 Casey Link <casey@outskirtslabs.com>
+
 Distributed under the [MIT](https://spdx.org/licenses/MIT.html).
 
 
